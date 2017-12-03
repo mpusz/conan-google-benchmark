@@ -1,61 +1,68 @@
-[![Build Status](https://travis-ci.org/lasote/conan-gtest.svg)](https://travis-ci.org/lasote/conan-gtest)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=3600)](https://raw.githubusercontent.com/mpusz/conan_google_benchmark/master/LICENSE)
 
+# conan_google_benchmark
 
-# conan-gtest
+[conan-mpusz](https://bintray.com/mpusz/conan-mpusz) package for [Google Benchmark](https://github.com/google/benchmark) library.
 
-[Conan.io](https://conan.io) package for Google test library
+The package generated with this **conanfile** can be found at [conan-mpusz](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz/1.3.0%3Astable).
 
-The packages generated with this **conanfile** can be found in [conan.io](https://conan.io/source/gtest/1.8.0/lasote/stable).
+`conan` client can be downloaded from [Conan.io](https://conan.io).
 
-## Build packages
+## Reuse the package
 
-Download conan client from [Conan.io](https://conan.io) and run:
+### Add conan-mpusz remote
 
-    $ python build.py
+To add [conan-mpusz](https://bintray.com/mpusz/conan-mpusz) remote to your
+local `conan` instance run:
 
-## Upload packages to server
-
-    $ conan upload gtest/1.8.0@lasote/stable --all
-
-## Reuse the packages
+```bash
+conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
+```
 
 ### Basic setup
 
-    $ conan install gtest/1.8.0@lasote/stable
+```
+$ conan install google-benchmark/1.3.0@mpusz/stable --build=missing
+```
 
 ### Project setup
 
-If you handle multiple dependencies in your project, it would be better to add a *conanfile.txt*
+If you handle multiple dependencies in your project, it would be better
+to add a `conanfile.txt`
 
-    [requires]
-    gtest/1.8.0@lasote/stable
+```
+[requires]
+google-benchmark/1.3.0@mpusz/stable
 
-    [options]
-    gtest:shared=False
-    gtest:include_pdbs=false # MSVC - include debug symbols
-    gtest:no_gmock=True # don't include Google Mock
-    gtest:no_main=True # don't link with main() provided by gtest/gmock
+[generators]
+cmake
+```
 
-    [generators]
-    txt
-    cmake
+or if you are using `conanfile.py` file add:
 
-Complete the installation of requirements for your project running:</small></span>
+```python
+requires = "google-benchmark/1.3.0@mpusz/stable"
+```
 
-    conan install .
+Complete the installation of requirements for your project running:
 
-Project setup installs the library (and all his dependencies) and generates the files `conanbuildinfo.txt` and `conanbuildinfo.cmake` with all the necessary paths and variables
-needed to link with the other dependencies.
+```
+conan install . --build=missing <your_profile_and_settings>
+```
 
-### Ubuntu 16.04 support
+Project setup installs the library (and all its dependencies) and generates
+`conanbuildinfo.cmake` file with all the necessary paths and variables
+needed to link with other dependencies.
 
-On Ubuntu and using `clang`, we have found that linking with this package may cause
-the "undefined reference" issue if not linked to `libstdc++11` (see also
-[#23](https://github.com/lasote/conan-gtest/issues/23)).
 
-This is the recommended build command:
+## Build package
 
-    $ conan install .. -s compiler=clang -s compiler.version=3.6 \
-        -s compiler.libcxx=libstdc++11 --build=missing
+```
+$ conan create <username>/<channel> <your_profile_and_settings>
+```
 
-Also, make sure to use the `gtest:shared=False` option, as shown above.
+## Upload package to server
+
+```
+$ conan upload -r <remote-name> --all google-benchmark/1.3.0@<username>/<channel>
+```
