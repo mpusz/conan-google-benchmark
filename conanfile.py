@@ -30,6 +30,8 @@ class GoogleBenchmarkConan(ConanFile):
     url = "https://github.com/mpusz/conan_google_benchmark"
     description = "A microbenchmark support library"
     settings = "os", "arch", "compiler", "build_type"
+    options = {"testing": [True, False], "exceptions": [True, False]}
+    default_options = ("testing=False", "exceptions=True")
     generators = "cmake"
     exports_sources = "CMakeLists.txt"
 
@@ -42,6 +44,8 @@ class GoogleBenchmarkConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if self.options.testing else "OFF"
+        cmake.definitions["BENCHMARK_ENABLE_EXCEPTIONS"] = "ON" if self.options.exceptions else "OFF"
         cmake.configure()
         cmake.install()
 

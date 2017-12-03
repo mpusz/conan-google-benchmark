@@ -34,6 +34,10 @@ to add a `conanfile.txt`
 [requires]
 google-benchmark/1.3.0@mpusz/stable
 
+[options]
+google-benchmark:testing=False
+google-benchmark:exceptions=True
+
 [generators]
 cmake
 ```
