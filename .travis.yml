@@ -99,7 +99,10 @@ before_install:
     # Install conan
     export PATH=$HOME/.local/bin:$PATH
     pip install --user conan
-    conan user
+    conan profile new default --detect
+    if [ -n "$CLANG_VERSION" ]; then
+      conan profile update settings.compiler.libcxx=libc++ default
+    fi
 
   - |
     # Print environment
@@ -114,4 +117,4 @@ before_install:
 script:
   - |
     # Verify everything with Conan
-    conan create --build=missing mpusz/testing
+    conan create -s build_type=${BUILD_TYPE} --build=missing mpusz/testing

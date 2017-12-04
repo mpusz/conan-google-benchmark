@@ -50,7 +50,7 @@ clone_depth: 5
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - pip.exe install conan
-  - conan user
+  - conan profile new default --detect
 
-test_script:
-  - 'conan create --build=missing mpusz/testing'
+build_script:
+  - conan create -s build_type=%CONFIGURATION% --build=missing mpusz/testing
