@@ -1,0 +1,117 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2017 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Adapted from various sources, including:
+# - Eric Niebler's Ranges: https://github.com/ericniebler/range-v3
+# - Louis Dionne's Hana: https://github.com/ldionne/hana
+
+language: c++
+
+env:
+  global:
+    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+
+cache:
+  directories:
+    - ${DEPS_DIR}/llvm
+
+git:
+  depth: 3
+
+matrix:
+  include:
+    - os: linux
+      env: GCC_VERSION=7 BUILD_TYPE=Release
+      addons: &gcc7
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+
+    - os: linux
+      env: GCC_VERSION=7 BUILD_TYPE=Debug
+      addons: *gcc7
+
+    - os: linux
+      env: CLANG_VERSION=5.0 BUILD_TYPE=Release
+      addons: &clang5
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+
+    - os: linux
+      env: CLANG_VERSION=5.0 BUILD_TYPE=Debug
+      addons: *clang5
+
+before_install:
+  - |
+    # Set compilers provided in matrix
+    if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
+    if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+
+  - |
+    # Install libc++
+    if [ -n "$CLANG_VERSION" ]; then
+      LLVM_VERSION=${CLANG_VERSION}.0
+      LLVM_DIR=${DEPS_DIR}/llvm/llvm-${LLVM_VERSION}
+      if [ ! -f ${LLVM_DIR}/cached ]; then
+        LLVM_URL="http://llvm.org/releases/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz"
+        LIBCXX_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxx-${LLVM_VERSION}.src.tar.xz"
+        LIBCXXABI_URL="http://llvm.org/releases/${LLVM_VERSION}/libcxxabi-${LLVM_VERSION}.src.tar.xz"
+        mkdir -p ${LLVM_DIR} ${LLVM_DIR}/build ${LLVM_DIR}/projects/libcxx ${LLVM_DIR}/projects/libcxxabi
+        travis_retry wget --quiet -O - ${LLVM_URL}      | tar --strip-components=1 -xJ -C ${LLVM_DIR}
+        travis_retry wget --quiet -O - ${LIBCXX_URL}    | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxx
+        travis_retry wget --quiet -O - ${LIBCXXABI_URL} | tar --strip-components=1 -xJ -C ${LLVM_DIR}/projects/libcxxabi
+        (cd ${LLVM_DIR}/build && cmake .. -DCMAKE_INSTALL_PREFIX=${LLVM_DIR}/install -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Release)
+        (cd ${LLVM_DIR}/build/projects/libcxx && make install -j2)
+        (cd ${LLVM_DIR}/build/projects/libcxxabi && make install -j2)
+        touch ${LLVM_DIR}/cached
+      fi
+      export CXXFLAGS="${CXXFLAGS} -stdlib=libc++ -nostdinc++ -I${LLVM_DIR}/install/include/c++/v1 -Wno-unused-command-line-argument"
+      export LDFLAGS="${LDFLAGS} -L${LLVM_DIR}/install/lib -Wl,-rpath,${LLVM_DIR}/install/lib"
+      export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${LLVM_DIR}/install/lib"
+      CONAN_CLANG_LIBC="-s compiler=clang -s compiler.version=${CLANG_VERSION} -s compiler.libcxx=libc++"
+    fi
+
+  - |
+    # Install conan
+    export PATH=$HOME/.local/bin:$PATH
+    pip install --user conan
+    conan user
+
+  - |
+    # Print environment
+    which $CXX
+    which $CC
+    $CXX --version
+    if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
+    which cmake
+    cmake --version
+    conan --version
+
+script:
+  - |
+    # Verify everything with Conan
+    conan create --build=missing mpusz/testing

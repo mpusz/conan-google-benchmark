@@ -1,0 +1,56 @@
+# The MIT License (MIT)
+#
+# Copyright (c) 2017 Mateusz Pusz
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+# Adapted from various sources, including:
+# - Eric Niebler's Ranges: https://github.com/ericniebler/range-v3
+# - Louis Dionne's Hana: https://github.com/ldionne/hana
+
+version: 1.0.{build}
+
+branches:
+  except:
+    - gh-pages
+
+skip_commits:
+  message: /\[ci skip\]/
+
+image: Visual Studio 2017
+
+platform:
+  - x64
+ 
+configuration:
+  - Release
+  - Debug
+
+init:
+  - git config --global core.autocrlf input
+
+clone_depth: 5
+
+install:
+  - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install conan
+  - conan user
+
+test_script:
+  - 'conan create --build=missing mpusz/testing'
