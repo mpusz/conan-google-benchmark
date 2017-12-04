@@ -29,9 +29,11 @@ language: c++
 env:
   global:
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
+    - CMAKE_VERSION="3.9.3"
 
 cache:
   directories:
+    - ${DEPS_DIR}/cmake-${CMAKE_VERSION}
     - ${DEPS_DIR}/llvm
 
 git:
@@ -70,6 +72,22 @@ before_install:
     # Set compilers provided in matrix
     if [ -n "$GCC_VERSION" ]; then export CXX="g++-${GCC_VERSION}" CC="gcc-${GCC_VERSION}"; fi
     if [ -n "$CLANG_VERSION" ]; then export CXX="clang++-${CLANG_VERSION}" CC="clang-${CLANG_VERSION}"; fi
+
+  - |
+    # Install requested CMake version
+    if [ "${TRAVIS_OS_NAME}" == "linux" ]; then
+      if [ ! -f ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached ]; then
+        CMAKE_URL="https://cmake.org/files/v3.9/cmake-${CMAKE_VERSION}-Linux-x86_64.tar.gz"
+        mkdir -p ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        travis_retry wget --no-check-certificate --quiet -O - "${CMAKE_URL}" | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake-${CMAKE_VERSION}
+        touch ${DEPS_DIR}/cmake-${CMAKE_VERSION}/cached
+      else
+        echo "Using cached cmake version ${CMAKE_VERSION}."
+      fi
+      export PATH="${DEPS_DIR}/cmake-${CMAKE_VERSION}/bin:${PATH}"
+    else
+      if ! brew ls --version cmake &>/dev/null; then brew install cmake; fi
+    fi
 
   - |
     # Install libc++
@@ -113,6 +131,7 @@ before_install:
     which cmake
     cmake --version
     conan --version
+    conan profile show default
 
 script:
   - |
