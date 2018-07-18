@@ -20,32 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake, tools
-import os
+from conans import ConanFile, CMake
 
 class GoogleBenchmarkConan(ConanFile):
     name = "google-benchmark"
-    version = "1.3.0"
+    version = "1.4.1"
     license = "https://github.com/google/benchmark/blob/master/LICENSE"
-    url = "https://github.com/mpusz/conan_google_benchmark"
+    url = "https://github.com/mpusz/conan-google-benchmark"
     description = "A microbenchmark support library"
     settings = "os", "arch", "compiler", "build_type"
-    options = {"testing": [True, False], "exceptions": [True, False]}
-    default_options = ("testing=False", "exceptions=True")
-    generators = "cmake"
-    exports_sources = "CMakeLists.txt"
-
-    def source(self):
-        zip_name = "v%s.zip" % self.version
-        url = "https://github.com/google/benchmark/archive/%s" % zip_name
-        tools.download(url, zip_name)
-        tools.unzip(zip_name)
-        os.unlink(zip_name)
+    options = {
+        "testing": [True, False],
+        "exceptions": [True, False],
+        "lto": [True, False],
+    }
+    default_options = ("testing=False", "exceptions=True", "lto=False")
+    scm = {
+        "type": "git",
+        "url": "https://github.com/google/benchmark.git",
+        "revision": "v%s" % version
+    }
 
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if self.options.testing else "OFF"
         cmake.definitions["BENCHMARK_ENABLE_EXCEPTIONS"] = "ON" if self.options.exceptions else "OFF"
+        cmake.definitions["BENCHMARK_ENABLE_LTO"] = "ON" if self.options.lto else "OFF"
         cmake.configure()
         cmake.install()
 

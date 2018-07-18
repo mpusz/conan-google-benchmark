@@ -24,11 +24,11 @@ from conans import ConanFile, CMake
 
 class GoogleBenchmarkTestConan(ConanFile):
     settings = "os", "compiler", "arch", "build_type"
-    generators = "cmake"
+    generators = "cmake_paths"
 
     def build(self):
         cmake = CMake(self)
-        cmake.configure(source_dir=self.conanfile_directory, build_dir="./")
+        cmake.configure()
         cmake.build()
 
     def imports(self):

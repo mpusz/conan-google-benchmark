@@ -3,11 +3,11 @@
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/conan-google-benchmark/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/conan-google-benchmark)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/google-benchmark%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz/_latestVersion)
 
-# conan_google_benchmark
+# conan-google-benchmark
 
 [conan-mpusz](https://bintray.com/mpusz/conan-mpusz) package for [Google Benchmark](https://github.com/google/benchmark) library.
 
-The package generated with this **conanfile** can be found at [conan-mpusz](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz/1.3.0%3Astable).
+The package generated with this **conanfile** can be found at [conan-mpusz](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz).
 
 `conan` client can be downloaded from [Conan.io](https://conan.io).
 
@@ -25,7 +25,7 @@ conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
 ### Basic setup
 
 ```
-$ conan install google-benchmark/1.3.0@mpusz/stable --build=missing
+$ conan install google-benchmark/1.4.1@mpusz/stable --build=missing
 ```
 
 ### Project setup
@@ -35,20 +35,21 @@ to add a `conanfile.txt`
 
 ```
 [requires]
-google-benchmark/1.3.0@mpusz/stable
+google-benchmark/1.4.1@mpusz/stable
 
 [options]
 google-benchmark:testing=False
 google-benchmark:exceptions=True
+google-benchmark:exceptions=False
 
 [generators]
-cmake
+cmake_paths
 ```
 
 or if you are using `conanfile.py` file add:
 
 ```python
-requires = "google-benchmark/1.3.0@mpusz/stable"
+requires = "google-benchmark/1.4.1@mpusz/stable"
 ```
 
 Complete the installation of requirements for your project running:
@@ -71,5 +72,5 @@ $ conan create <username>/<channel> <your_profile_and_settings>
 ## Upload package to server
 
 ```
-$ conan upload -r <remote-name> --all google-benchmark/1.3.0@<username>/<channel>
+$ conan upload -r <remote-name> --all google-benchmark/1.4.1@<username>/<channel>
 ```

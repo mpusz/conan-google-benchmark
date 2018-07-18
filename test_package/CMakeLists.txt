@@ -23,12 +23,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(conan_google_benchmark_test)
 
-if(NOT EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    message(FATAL_ERROR "Please run 'conan install .. && conan source ..' first")
-endif()
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
+include(${CMAKE_BINARY_DIR}/conan_paths.cmake)
 
 find_package(benchmark CONFIG REQUIRED)
 
