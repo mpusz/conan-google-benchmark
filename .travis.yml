@@ -136,4 +136,4 @@ before_install:
 script:
   - |
     # Verify everything with Conan
-    conan create -s build_type=${BUILD_TYPE} --build=missing mpusz/testing
+    conan create . -s build_type=${BUILD_TYPE} --build=missing mpusz/testing

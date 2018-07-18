@@ -53,4 +53,4 @@ install:
   - conan profile new default --detect
 
 build_script:
-  - conan create -s build_type=%CONFIGURATION% --build=missing mpusz/testing
+  - conan create . -s build_type=%CONFIGURATION% --build=missing mpusz/testing
