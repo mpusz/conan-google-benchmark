@@ -20,22 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake
+cmake_minimum_required(VERSION 2.8.11)
+project(cmake_wrapper)
 
-class GoogleBenchmarkTestConan(ConanFile):
-    settings = "os", "arch", "compiler", "build_type"
-    generators = "cmake_paths"
+include(conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
 
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
-        cmake.build()
-
-    def imports(self):
-        self.copy("*.dll", dst="bin", src="bin")
-        self.copy("*.dylib*", dst="bin", src="lib")
-        self.copy('*.so*', dst='bin', src='lib')
-
-    def test(self):
-        cmake = CMake(self)
-        self.run("ctest -VV -C %s" % cmake.build_type)
+add_subdirectory("source_subfolder")

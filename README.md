@@ -66,7 +66,7 @@ needed to link with other dependencies.
 ## Build package
 
 ```
-$ conan create <username>/<channel> <your_profile_and_settings>
+$ conan create . <username>/<channel> <your_profile_and_settings>
 ```
 
 ## Upload package to server
