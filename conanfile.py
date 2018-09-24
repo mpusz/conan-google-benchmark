@@ -51,14 +51,14 @@ class GoogleBenchmarkConan(ConanFile):
             del self.options.shared  # See https://github.com/google/benchmark/issues/639 - no Windows shared support for now
 
     def build_requirements(self):
-        if tools.get_env("CONAN_RUN_TESTS", True):
+        if tools.get_env("CONAN_RUN_TESTS", False):
             self.build_requires("gtest/1.8.1@bincrafters/stable")
 
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BENCHMARK_ENABLE_EXCEPTIONS"] = "ON" if self.options.exceptions else "OFF"
         cmake.definitions["BENCHMARK_ENABLE_LTO"] = "ON" if self.options.lto else "OFF"
-        cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if tools.get_env("CONAN_RUN_TESTS", True) else "OFF"
+        cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if tools.get_env("CONAN_RUN_TESTS", False) else "OFF"
         cmake.definitions["CMAKE_PROJECT_benchmark_INCLUDE"] = "conan_paths.cmake"
         cmake.configure()
         return cmake
@@ -66,7 +66,7 @@ class GoogleBenchmarkConan(ConanFile):
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
-        if tools.get_env("CONAN_RUN_TESTS", True):
+        if tools.get_env("CONAN_RUN_TESTS", False):
             cmake.test()
 
     def package(self):
