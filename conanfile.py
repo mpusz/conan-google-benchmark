@@ -48,6 +48,7 @@ class GoogleBenchmarkConan(ConanFile):
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
+            del self.options.shared  # See https://github.com/google/benchmark/issues/639 - no Windows shared support for now
 
     def build_requirements(self):
         if tools.get_env("CONAN_RUN_TESTS", True):
