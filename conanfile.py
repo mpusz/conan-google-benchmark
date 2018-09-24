@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
 
 class GoogleBenchmarkConan(ConanFile):
     name = "google-benchmark"
@@ -30,8 +30,7 @@ class GoogleBenchmarkConan(ConanFile):
     license = "https://github.com/google/benchmark/blob/master/LICENSE"
     url = "https://github.com/mpusz/conan-google-benchmark"
     exports = ["LICENSE.md"]
-    exports_sources = ["CMakeLists.txt"]
-    generators = "cmake"
+    generators = "cmake_paths"
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
@@ -44,27 +43,30 @@ class GoogleBenchmarkConan(ConanFile):
         "type": "git",
         "url": "https://github.com/google/benchmark.git",
         "revision": "v%s" % version,
-        "subfolder": "source_subfolder"
     }
 
     def config_options(self):
         if self.settings.os == 'Windows':
             del self.options.fPIC
 
-    def configure(self):
-        if self.settings.compiler == 'Visual Studio':
-            del self.options.fPIC
+    def build_requirements(self):
+        if tools.get_env("CONAN_RUN_TESTS", True):
+            self.build_requires("gtest/1.8.1@bincrafters/stable")
 
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BENCHMARK_ENABLE_EXCEPTIONS"] = "ON" if self.options.exceptions else "OFF"
         cmake.definitions["BENCHMARK_ENABLE_LTO"] = "ON" if self.options.lto else "OFF"
+        cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if tools.get_env("CONAN_RUN_TESTS", True) else "OFF"
+        cmake.definitions["CMAKE_PROJECT_benchmark_INCLUDE"] = "conan_paths.cmake"
         cmake.configure()
         return cmake
 
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
+        if tools.get_env("CONAN_RUN_TESTS", True):
+            cmake.test()
 
     def package(self):
         self.copy("license*", dst="licenses",  ignore_case=True, keep_path=False)
