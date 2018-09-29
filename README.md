@@ -19,7 +19,7 @@ To add [conan-mpusz](https://bintray.com/mpusz/conan-mpusz) remote to your
 local `conan` instance run:
 
 ```bash
-conan remote add conan-mpusz https://bintray.com/mpusz/conan-mpusz
+conan remote add conan-mpusz https://api.bintray.com/conan/mpusz/conan-mpusz
 ```
 
 ### Basic setup
@@ -38,9 +38,6 @@ to add a `conanfile.txt`
 google-benchmark/1.4.1@mpusz/stable
 
 [options]
-google-benchmark:testing=False
-google-benchmark:exceptions=True
-google-benchmark:exceptions=False
 
 [generators]
 cmake_paths
@@ -55,22 +52,25 @@ requires = "google-benchmark/1.4.1@mpusz/stable"
 Complete the installation of requirements for your project running:
 
 ```
-conan install . --build=missing <your_profile_and_settings>
+mkdir build
+cd build
+conan install .. --build=outdated <your_profile_and_settings>
+<your typical build process>
 ```
 
-Project setup installs the library (and all its dependencies) and generates
-`conanbuildinfo.cmake` file with all the necessary paths and variables
-needed to link with other dependencies.
+Project setup installs the library (and all its dependencies), and assuming you chose
+`cmake_paths` as a generator, it generates `conan_paths.cmake` file that defines variables
+to make CMake `find_package()` work and find all the dependencies in the Conan local cache.
 
 
 ## Build package
 
 ```
-$ conan create . <username>/<channel> <your_profile_and_settings>
+$ conan create . <user>/<channel> <your_profile_and_settings>
 ```
 
 ## Upload package to server
 
 ```
-$ conan upload -r <remote-name> --all google-benchmark/1.4.1@<username>/<channel>
+$ conan upload -r <remote-name> --all google-benchmark/1.4.1@<user>/<channel>
 ```
