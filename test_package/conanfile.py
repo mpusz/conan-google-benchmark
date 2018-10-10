@@ -24,7 +24,7 @@ from conans import ConanFile, CMake
 
 class GoogleBenchmarkTestConan(ConanFile):
     settings = "os", "arch", "compiler", "build_type"
-    generators = "cmake_paths"
+    generators = "cmake"
 
     def build(self):
         cmake = CMake(self)

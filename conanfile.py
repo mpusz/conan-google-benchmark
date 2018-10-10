@@ -30,7 +30,7 @@ class GoogleBenchmarkConan(ConanFile):
     license = "https://github.com/google/benchmark/blob/master/LICENSE"
     url = "https://github.com/mpusz/conan-google-benchmark"
     exports = ["LICENSE.md"]
-    generators = "cmake_paths"
+    generators = "cmake"
     settings = "os", "arch", "compiler", "build_type"
     options = {
         "shared": [True, False],
@@ -54,12 +54,18 @@ class GoogleBenchmarkConan(ConanFile):
         if tools.get_env("CONAN_RUN_TESTS", False):
             self.build_requires("gtest/1.8.1@bincrafters/stable")
 
+    def source(self):
+        tools.replace_in_file("CMakeLists.txt",
+                              "project (benchmark)",
+                              """project (benchmark)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)""")
+
     def _configure_cmake(self):
         cmake = CMake(self)
         cmake.definitions["BENCHMARK_ENABLE_EXCEPTIONS"] = "ON" if self.options.exceptions else "OFF"
         cmake.definitions["BENCHMARK_ENABLE_LTO"] = "ON" if self.options.lto else "OFF"
         cmake.definitions["BENCHMARK_ENABLE_TESTING"] = "ON" if tools.get_env("CONAN_RUN_TESTS", False) else "OFF"
-        cmake.definitions["CMAKE_PROJECT_benchmark_INCLUDE"] = "conan_paths.cmake"
         cmake.configure()
         return cmake
 
