@@ -3,6 +3,13 @@
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/conan-google-benchmark/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/conan-google-benchmark)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/google-benchmark%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz/_latestVersion)
 
+# DEPRECATED
+
+Please not that as google benchmark now has an official Conan support this repository should be considered
+deprecated. Please download the latest google benchmark from: https://bintray.com/conan/conan-center/benchmark%3A_.
+
+---
+
 # conan-google-benchmark
 
 [conan-mpusz](https://bintray.com/mpusz/conan-mpusz) package for [Google Benchmark](https://github.com/google/benchmark) library.
