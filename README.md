@@ -5,7 +5,7 @@
 
 # DEPRECATED
 
-Please not that as google benchmark now has an official Conan support this repository should be considered
+Please note that as Google Benchmark now has an official Conan support this repository should be considered
 deprecated. Please download the latest google benchmark from: https://bintray.com/conan/conan-center/benchmark%3A_.
 
 ---
