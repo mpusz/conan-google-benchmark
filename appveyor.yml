@@ -33,7 +33,7 @@ branches:
 skip_commits:
   message: /\[ci skip\]/
 
-image: Visual Studio 2017
+image: Visual Studio 2018
 
 platform:
   - x64
@@ -53,4 +53,4 @@ install:
   - conan profile new default --detect
 
 build_script:
-  - conan create . -s build_type=%CONFIGURATION% --build=missing mpusz/testing
+  - conan create . mpusz/testing -s build_type=%CONFIGURATION% --build=missing
