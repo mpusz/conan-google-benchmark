@@ -55,17 +55,69 @@ matrix:
       addons: *gcc7
 
     - os: linux
-      env: CLANG_VERSION=5.0 BUILD_TYPE=Release
-      addons: &clang5
+      env: GCC_VERSION=8 BUILD_TYPE=Release
+      addons: &gcc8
         apt:
           sources:
-            - llvm-toolchain-trusty-5.0
+            - ubuntu-toolchain-r-test
           packages:
-            - clang-5.0
+            - g++-8
 
     - os: linux
-      env: CLANG_VERSION=5.0 BUILD_TYPE=Debug
-      addons: *clang5
+      env: GCC_VERSION=8 BUILD_TYPE=Debug
+      addons: *gcc8
+
+    - os: linux
+      env: GCC_VERSION=9 BUILD_TYPE=Release
+      addons: &gcc9
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-9
+
+    - os: linux
+      env: GCC_VERSION=9 BUILD_TYPE=Debug
+      addons: *gcc9
+
+    - os: linux
+      env: CLANG_VERSION=7 BUILD_TYPE=Release
+      addons: &clang7
+        apt:
+          sources:
+            - llvm-toolchain-trusty-7
+          packages:
+            - clang-7
+
+    - os: linux
+      env: CLANG_VERSION=7 BUILD_TYPE=Debug
+      addons: *clang7
+
+    - os: linux
+      env: CLANG_VERSION=8 BUILD_TYPE=Release
+      addons: &clang8
+        apt:
+          sources:
+            - llvm-toolchain-trusty-8
+          packages:
+            - clang-8
+
+    - os: linux
+      env: CLANG_VERSION=8 BUILD_TYPE=Debug
+      addons: *clang8
+
+    - os: linux
+      env: CLANG_VERSION=9 BUILD_TYPE=Release
+      addons: &clang9
+        apt:
+          sources:
+            - llvm-toolchain-trusty-9
+          packages:
+            - clang-9
+
+    - os: linux
+      env: CLANG_VERSION=9 BUILD_TYPE=Debug
+      addons: *clang9
 
 before_install:
   - |
