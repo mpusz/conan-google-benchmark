@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=3600)](https://raw.githubusercontent.com/mpusz/conan-google-benchmark/master/LICENSE)
-[![Travis CI](https://img.shields.io/travis/mpusz/conan-google-benchmark/master.svg?label=Travis%20CI)](https://travis-ci.org/mpusz/conan-google-benchmark)
+[![Travis CI](https://img.shields.io/travis/com/mpusz/conan-google-benchmark/master.svg?label=Travis%20CI)](https://travis-ci.com/mpusz/conan-google-benchmark)
 [![AppVeyor](https://img.shields.io/appveyor/ci/mpusz/conan-google-benchmark/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/mpusz/conan-google-benchmark)
 [![Download](https://api.bintray.com/packages/mpusz/conan-mpusz/google-benchmark%3Ampusz/images/download.svg)](https://bintray.com/mpusz/conan-mpusz/google-benchmark%3Ampusz/_latestVersion)
 
