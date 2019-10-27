@@ -116,7 +116,7 @@ before_install:
   - |
     # Install conan
     export PATH=$HOME/.local/bin:$PATH
-    pip install --user conan
+    pip install -U --user conan
     conan profile new default --detect
     if [ -n "$CLANG_VERSION" ]; then
       conan profile update settings.compiler.libcxx=libc++ default
@@ -127,7 +127,6 @@ before_install:
     which $CXX
     which $CC
     $CXX --version
-    if [[ "$SANITIZER" != "" ]]; then echo SANITIZER=$SANITIZER; fi
     which cmake
     cmake --version
     conan --version
@@ -136,4 +135,4 @@ before_install:
 script:
   - |
     # Verify everything with Conan
-    conan create . -s build_type=${BUILD_TYPE} --build=missing mpusz/testing
+    conan create . mpusz/testing -s build_type=${BUILD_TYPE} --build=missing
